@@ -59,6 +59,7 @@
         const scrollProgress = document.getElementById('scroll-progress');
         const navbar = document.getElementById('navbar');
         const sections = document.querySelectorAll('section');
+        let lastSection = 'home';
 
         window.addEventListener('scroll', () => {
             // Progress Bar
@@ -82,6 +83,29 @@
                     current = section.getAttribute('id');
                 }
             });
+
+            if (current && current !== lastSection) {
+                const heroVideo = document.getElementById('hero-video');
+                const muteBtn = document.getElementById('hero-mute-toggle');
+                if (heroVideo && muteBtn) {
+                    if (current !== 'home') {
+                        heroVideo.pause();
+                        heroVideo.currentTime = heroVideo.currentTime;
+                        heroVideo.muted = true;
+                        heroVideo.setAttribute('muted', '');
+                        muteBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+                        muteBtn.title = 'Unmute Introduction';
+                        muteBtn.setAttribute('data-state', 'muted');
+                    } else {
+                        heroVideo.muted = true;
+                        heroVideo.setAttribute('muted', '');
+                        muteBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+                        muteBtn.title = 'Unmute Introduction';
+                        muteBtn.setAttribute('data-state', 'muted');
+                    }
+                }
+                lastSection = current;
+            }
 
             navLinksItems.forEach(link => {
                 link.classList.remove('active');
@@ -267,6 +291,11 @@
             animateParticles();
         }
         function openPdfModal(pdfUrl) {
+            const titleElement = document.getElementById('modal-title-text');
+            if (titleElement) {
+                const isResume = pdfUrl.toLowerCase().includes('software_engineer') || pdfUrl.toLowerCase().includes('resume');
+                titleElement.textContent = isResume ? 'Resume Preview' : 'Document Viewer';
+            }
             document.getElementById('pdf-modal-iframe').src = pdfUrl + '#toolbar=1&navpanes=0&scrollbar=1&view=FitH';
             document.getElementById('pdf-modal').style.display = 'flex';
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
